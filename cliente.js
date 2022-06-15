@@ -26,7 +26,7 @@ const mostrar = (usuarios) => {
                             <td>${usuario.nombre}</td>
                             <td>${usuario.email}</td>
                             <td>${usuario.prioridad}</td>
-                            <td class="text-center"><a class="btnEditar btn btn-primary">Editar</a><a class="btnBorrar btn btn-danger">Borrar</a></td>
+                            <td class="text-center"><a class="btnEditar btn btn-primary">Editar</a><a class="ms-2 btn btnBorrar"><span style='font-size:25px;'>&#10060;</span></a></td>
                        </tr>
                     `    
     })
@@ -135,8 +135,8 @@ on(document, 'click', '#btnBuscarEmail', (e)  => {
     const input = document.getElementById("buscarPorEmail");
     const inp = input.value;
     const emailUrl = `/email/${inp}`;
+    const btnDel = document.getElementById("btnEliminarEmail");
    
-
     fetch(url+emailUrl, {
             method: 'GET'
         })
@@ -147,11 +147,29 @@ on(document, 'click', '#btnBuscarEmail', (e)  => {
         <td>${data[0].nombre}</td>
         <td>${data[0].email}</td>
         <td>${data[0].prioridad}</td>
-        <td class="text-center"><a class="btnEditar btn btn-primary">Editar</a><a class="btnBorrar btn btn-danger">Borrar</a></td>
+        <td class="text-center"><a class="btnEditar btn btn-primary ">Editar</a><a class="ms-2 btn btnBorrar"><span style='font-size:25px;'>&#10060;</span></a></td>
    </tr>
-`     )
-       
+`     ).then(btnDel.classList.remove("d-none"))
+
+     
         
-    },
+    } 
     )
+  //Funcion para poder eliminar el usuario encontrado por el email
+    on(document, 'click', '#btnEliminarEmail', (e) => {
+        const input = document.getElementById("buscarPorEmail");
+        const ema = input.value;
+        alertify.confirm(`Esta seguro de eliminar el usuario con email: ${ema}`,
+        function(){
+            fetch(url+`/email/${ema}`, {
+                method: 'DELETE'
+            })
+            .then( res => res.json() )
+            .then( ()=> location.reload())
+            alertify.success('Ok')
+        },
+        function(){
+            alertify.error('Cancel')
+        })
+    })
 
